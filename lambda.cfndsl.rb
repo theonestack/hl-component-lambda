@@ -46,7 +46,7 @@ CloudFormation do
     Lambda_Function(function_name) do
       Code({
           S3Bucket: distribution['bucket'],
-          S3Key: FnSub("#{distribution['prefix']}/#{lambda_config['code_uri']}")
+          S3Key: FnSub("#{distribution['key']}/#{lambda_config['code_uri']}")
       })
 
       Environment(Variables: Hash[environment.collect { |k, v| [k, v] }])

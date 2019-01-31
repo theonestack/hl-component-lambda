@@ -5,7 +5,7 @@ maximum_availability_zones: 5
 
 # distribution:
 #   bucket: source.example.dev
-#   key: /lambda
+#   key: lambda
 #
 # functions:
 #   myfunction:
