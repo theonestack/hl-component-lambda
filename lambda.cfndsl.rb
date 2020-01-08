@@ -1,17 +1,21 @@
 CloudFormation do
 
+  maximum_availability_zones = external_parameters.fetch(:maximum_availability_zones, 5)
+
+  functions = external_parameters.fetch(:functions, {})
   functions.each do |function_name, lambda_config|
     if (lambda_config.has_key? 'enable_eni') && (lambda_config['enable_eni'])
       az_conditions_resources('SubnetCompute', maximum_availability_zones)
       break
     end
-  end if defined? functions
+  end
 
   tags = []
   tags << { Key: 'Environment', Value: Ref(:EnvironmentName) }
   tags << { Key: 'EnvironmentType', Value: Ref(:EnvironmentType) }
 
-  extra_tags.each { |key,value| tags << { Key: key, Value: value } } if defined? extra_tags
+  extra_tags = external_parameters.fetch(:extra_tags, {})
+  extra_tags.each { |key,value| tags << { Key: key, Value: value } }
 
   functions.each do |function_name, lambda_config|
 
@@ -36,7 +40,7 @@ CloudFormation do
 
       Output("#{function_name}SecurityGroup") {
         Value(Ref("#{function_name}SecurityGroup"))
-        Export FnSub("${EnvironmentName}-#{component_name}-#{function_name}SecurityGroup")
+        Export FnSub("${EnvironmentName}-#{external_parameters[:component_name]}-#{function_name}SecurityGroup")
       }
     end
 
@@ -137,7 +141,7 @@ CloudFormation do
 
     end if lambda_config.has_key?('events')
 
-  end if defined? functions
+  end
 
 
 
