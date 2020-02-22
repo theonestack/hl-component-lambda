@@ -121,6 +121,11 @@ CloudFormation do
           SourceArn Ref("#{function_name}Sns#{name}")
         end
 
+        Output("#{function_name}Sns#{name}") do
+          Value Ref("#{function_name}Sns#{name}")
+          Export FnSub("${EnvironmentName}-#{component_name}-#{function_name}SnsTopic")
+        end
+
       when 'filter'
 
         Logs_SubscriptionFilter("#{function_name}SubscriptionFilter#{name}") do
