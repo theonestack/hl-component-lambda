@@ -5,7 +5,7 @@ test_metadata:
 
 distribution:
   bucket: source.example.dev
-  key: /lambda
+  prefix: /lambda
 
 functions:
   myfunction:
