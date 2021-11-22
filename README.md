@@ -24,7 +24,7 @@
   Component name: 'lambda', template: 'lambda'
 
 ```
-### Site-to-Site VPN Configuration
+### Lambda Configuration
 ```
 functions:
   app1:
