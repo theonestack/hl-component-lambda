@@ -1,26 +1,75 @@
-![build-status](https://travis-ci.com/theonestack/hl-component-lambda.svg?branch=master)
+# lambda CfHighlander component
+## Parameters
 
-### Cfhighlander lambda component
+| Name | Use | Default | Global | Type | Allowed Values |
+| ---- | --- | ------- | ------ | ---- | -------------- |
+| EnvironmentName | Tagging | dev | true | string
+| EnvironmentType | Tagging | development | true | string | ['development','production']
+| VPCId | Security Groups | None | false | AWS::EC2::VPC::Id
 
-```bash
+## Outputs/Exports
 
-# install highlander gem
-$ gem install cfhighlander
+| Name | Value | Exported |
+| ---- | ----- | -------- |
+| {function_name}SecurityGroup | The security group created for the function | true
 
-# build and validate standalone component
-$ cfcompile --validate
+
+## Included Components
+[lib-ec2](https://github.com/theonestack/hl-component-lib-ec2)
+[lib-iam](https://github.com/theonestack/hl-component-lib-iam)
+
+## Example Configuration
+### Highlander
+```
+  Component name: 'lambda', template: 'lambda'
 
 ```
+### Lambda Configuration
+```
+functions:
+  app1:
+      handler: handler.lambda_handler
+      runtime: python3.6
+      code_uri: app1/src.zip
+      timeout: 30
+      environment:
+        Environment: dev
+      policies:
+        logs:
+          action:
+            - logs:PutLogEvents
+            - logs:DescribeLogStreams
+            - logs:DescribeLogGroups
+          resource:
+            - '*'
+      enable_eni: true
+      log_retention: 7
+      events:
+        cron:
+          type: schedule
+          expression: cron(0 12 * * ? *)
+          payload: "{ 'a': 1, 'b': 2 }"
+        trigger:
+          type: sns
+```
 
+## Cfhighlander Setup
 
-### Parameters
+install cfhighlander [gem](https://github.com/theonestack/cfhighlander)
 
-TBD
+```bash
+gem install cfhighlander
+```
 
-### Configuration options
+or via docker
 
-TBD
+```bash
+docker pull theonestack/cfhighlander
+```
+## Testing Components
 
-### Outputs
+Running the tests
 
-TBD
+```bash
+cfhighlander cftest lambda
+```
