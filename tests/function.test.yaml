@@ -10,7 +10,7 @@ distribution:
 functions:
   myfunction:
       handler: handler.lambda_handler
-      runtime: python3.6
+      runtime: python3.9
       code_uri: myfunction/src.zip
       timeout: 30
       environment:
