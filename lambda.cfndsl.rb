@@ -45,7 +45,7 @@ CloudFormation do
     # Create Lambda function
     Lambda_Function(function_name) do
       Code({
-          S3Bucket: distribution['bucket'],
+          S3Bucket: FnSub(distribution['bucket']),
           S3Key: FnSub("#{distribution['prefix']}/#{lambda_config['code_uri']}")
       })
 
