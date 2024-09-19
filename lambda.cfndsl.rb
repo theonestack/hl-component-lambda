@@ -71,6 +71,11 @@ CloudFormation do
       Tags tags
     end
 
+    Output("#{function_name}Arn") {
+      Value FnGetAtt(function_name , 'Arn')
+      Export FnSub("${EnvironmentName}-#{external_parameters[:component_name]}-#{function_name}-arn")
+    }
+
     Logs_LogGroup("#{function_name}LogGroup") do
       LogGroupName FnSub("/aws/lambda/${EnvironmentName}/#{function_name}")
       RetentionInDays lambda_config['log_retention'] if lambda_config.has_key? 'log_retention'
