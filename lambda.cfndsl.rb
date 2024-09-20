@@ -45,7 +45,7 @@ CloudFormation do
     # Create Lambda function
     Lambda_Function(function_name) do
       Code({
-          S3Bucket: distribution['bucket'],
+          S3Bucket: FnSub(distribution['bucket']),
           S3Key: FnSub("#{distribution['prefix']}/#{lambda_config['code_uri']}")
       })
 
@@ -70,6 +70,11 @@ CloudFormation do
       end
       Tags tags
     end
+
+    Output("#{function_name}Arn") {
+      Value FnGetAtt(function_name , 'Arn')
+      Export FnSub("${EnvironmentName}-#{external_parameters[:component_name]}-#{function_name}-arn")
+    }
 
     Logs_LogGroup("#{function_name}LogGroup") do
       LogGroupName FnSub("/aws/lambda/${EnvironmentName}/#{function_name}")
