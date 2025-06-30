@@ -29,7 +29,7 @@
 functions:
   app1:
       handler: handler.lambda_handler
-      runtime: python3.6
+      runtime: python3.10
       code_uri: app1/src.zip
       timeout: 30
       environment:

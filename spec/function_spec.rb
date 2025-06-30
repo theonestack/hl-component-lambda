@@ -83,7 +83,7 @@ describe 'compiled component lambda' do
       end
       
       it "to have property Runtime" do
-          expect(resource["Properties"]["Runtime"]).to eq("python3.9")
+          expect(resource["Properties"]["Runtime"]).to eq("python3.10")
       end
       
       it "to have property Timeout" do
@@ -96,6 +96,10 @@ describe 'compiled component lambda' do
       
       it "to have property Tags" do
           expect(resource["Properties"]["Tags"]).to eq([{"Key"=>"Environment", "Value"=>{"Ref"=>"EnvironmentName"}}, {"Key"=>"EnvironmentType", "Value"=>{"Ref"=>"EnvironmentType"}}])
+      end
+      
+      it "to have property Layers" do
+          expect(resource["Properties"]["Layers"]).to eq(["arn:aws:lambda:us-east-1:123456789012:layer:my-layer:1"])
       end
       
     end

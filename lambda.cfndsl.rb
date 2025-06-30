@@ -56,6 +56,7 @@ CloudFormation do
       Role(FnGetAtt("#{function_name}Role", 'Arn'))
       Runtime(lambda_config['runtime'])
       Timeout(lambda_config['timeout'] || 10)
+      Layers(lambda_config['layers']) if lambda_config.has_key?('layers')
       if (lambda_config.has_key? 'enable_eni') && (lambda_config['enable_eni'])
         VpcConfig({
           SecurityGroupIds: [
@@ -67,6 +68,9 @@ CloudFormation do
 
       if !lambda_config['named'].nil? && lambda_config['named']
         FunctionName(function_name)
+      end
+      if !lambda_config['dlq_target_arn'].nil? && lambda_config['dlq_target_arn']
+        DeadLetterConfig({'TargetArn' => lambda_config['dlq_target_arn']})
       end
       Tags tags
     end
@@ -138,6 +142,18 @@ CloudFormation do
           SourceArn FnSub("arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/#{event['log_group']}:*")
         end
 
+
+      when 's3'
+
+        Lambda_Permission("#{function_name}#{name}Permissions") do
+            FunctionName Ref(function_name)
+            Action 'lambda:InvokeFunction'
+            Principal 's3.amazonaws.com'
+            SourceArn event['bucket']
+          end
+
+      
+      
       end
 
     end if lambda_config.has_key?('events')
